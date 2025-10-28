@@ -81,8 +81,8 @@ h1 { margin: 20px 0; color: #fff; text-shadow: 2px 2px 8px rgba(0,0,0,0.3); }
 }
 .order-box:hover { transform: translateY(-5px); background: rgba(255,255,255,1); }
 
-/* Overlay Page */
-#overlay {
+/* Overlay Page (Separate Page-like Panel) */
+.overlay {
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
@@ -91,20 +91,31 @@ h1 { margin: 20px 0; color: #fff; text-shadow: 2px 2px 8px rgba(0,0,0,0.3); }
   justify-content: center; align-items: center;
   z-index: 1000;
 }
-#overlayContent {
+.overlayContent {
   background: #fff;
   border-radius: 15px;
-  padding: 30px;
+  padding: 40px;
   width: 400px;
   max-width: 90%;
   text-align: center;
   animation: fadeInScale 0.4s ease;
 }
-#overlayContent h2 { margin-bottom: 15px; color: #333; }
-#overlayContent p { margin: 10px 0; color: #555; }
-#closeOverlay {
-  margin-top: 20px;
-  padding: 10px 20px;
+.overlayContent h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+.overlayContent h2 {
+  margin-bottom: 15px;
+  color: #555;
+}
+.overlayContent p {
+  margin: 10px 0;
+  color: #777;
+}
+.closeOverlay {
+  margin-top: 25px;
+  padding: 10px 25px;
   background: #6a11cb;
   color: white;
   border: none;
@@ -132,36 +143,35 @@ h1 { margin: 20px 0; color: #fff; text-shadow: 2px 2px 8px rgba(0,0,0,0.3); }
 <!-- Dashboard -->
 <div id="dashboard">
     <h1>Noya Bari Eating Orders</h1>
-    <div class="orders">
-        <!-- 10 boxes -->
-        <div class="order-box">No Orders</div>
-        <div class="order-box">No Orders</div>
-        <div class="order-box">No Orders</div>
-        <div class="order-box">No Orders</div>
-        <div class="order-box">No Orders</div>
-        <div class="order-box">No Orders</div>
-        <div class="order-box">No Orders</div>
-        <div class="order-box">No Orders</div>
-        <div class="order-box">No Orders</div>
-        <div class="order-box">No Orders</div>
+    <div class="orders" id="ordersContainer">
+        <!-- Boxes will be generated dynamically -->
     </div>
 </div>
 
-<!-- Overlay for Order Details -->
-<div id="overlay">
-    <div id="overlayContent">
-        <h2>Name: No Order</h2>
-        <p>Description: Anyone not ordered</p>
-        <button id="closeOverlay">Close</button>
-    </div>
-</div>
+<!-- Overlays container -->
+<div id="overlaysContainer"></div>
 
 <script>
+// Orders data - you can customize each box separately
+const ordersData = [
+  {boxTitle: "No Orders", name: "No Order", description: "Anyone not ordered"},
+  {boxTitle: "No Orders", name: "No Order", description: "Anyone not ordered"},
+  {boxTitle: "No Orders", name: "No Order", description: "Anyone not ordered"},
+  {boxTitle: "No Orders", name: "No Order", description: "Anyone not ordered"},
+  {boxTitle: "No Orders", name: "No Order", description: "Anyone not ordered"},
+  {boxTitle: "No Orders", name: "No Order", description: "Anyone not ordered"},
+  {boxTitle: "No Orders", name: "No Order", description: "Anyone not ordered"},
+  {boxTitle: "No Orders", name: "No Order", description: "Anyone not ordered"},
+  {boxTitle: "No Orders", name: "No Order", description: "Anyone not ordered"},
+  {boxTitle: "No Orders", name: "No Order", description: "Anyone not ordered"},
+];
+
 /* First-time login system */
 window.onload = function() {
     if(localStorage.getItem('loggedIn') === 'true') {
         document.getElementById('loginPage').style.display = 'none';
         document.getElementById('dashboard').style.display = 'flex';
+        initDashboard();
     }
 }
 
@@ -174,26 +184,52 @@ function login() {
         localStorage.setItem('loggedIn', 'true');
         document.getElementById('loginPage').style.display = 'none';
         document.getElementById('dashboard').style.display = 'flex';
+        initDashboard();
     } else {
         error.style.display = 'block';
     }
 }
 
-/* Overlay functionality */
-const overlay = document.getElementById('overlay');
-const closeOverlay = document.getElementById('closeOverlay');
-const orderBoxes = document.querySelectorAll('.order-box');
+// Initialize dashboard dynamically
+function initDashboard(){
+    const ordersContainer = document.getElementById('ordersContainer');
+    const overlaysContainer = document.getElementById('overlaysContainer');
 
-orderBoxes.forEach(box => {
-    box.addEventListener('click', () => {
-        overlay.style.display = 'flex';
+    ordersData.forEach((order, index) => {
+        // Create order box
+        const box = document.createElement('div');
+        box.classList.add('order-box');
+        box.textContent = order.boxTitle;
+        box.setAttribute('data-order', index);
+        ordersContainer.appendChild(box);
+
+        // Create overlay for each order
+        const overlay = document.createElement('div');
+        overlay.classList.add('overlay');
+        overlay.id = 'overlay' + index;
+        overlay.innerHTML = `
+            <div class="overlayContent">
+                <h1>${order.boxTitle}</h1>
+                <h2>Name: ${order.name}</h2>
+                <p>Description: ${order.description}</p>
+                <button class="closeOverlay">Close</button>
+            </div>
+        `;
+        overlaysContainer.appendChild(overlay);
+
+        // Close button
+        overlay.querySelector('.closeOverlay').addEventListener('click', () => {
+            overlay.style.display = 'none';
+        });
+
+        // Box click opens overlay
+        box.addEventListener('click', () => {
+            overlay.style.display = 'flex';
+        });
     });
-});
-
-closeOverlay.addEventListener('click', () => {
-    overlay.style.display = 'none';
-});
+}
 </script>
 
 </body>
 </html>
+
