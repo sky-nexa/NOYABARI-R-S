@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noya Bari Eating Orders</title>
+<style>
+/* Global Styles */
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+body, html { height: 100%; overflow: hidden; }
+
+/* Smooth Animated Background */
+body {
+  background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #a18cd1, #fbc2eb);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  display: flex; justify-content: center; align-items: center;
+  transition: background 0.5s ease;
+}
+@keyframes gradientBG {
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+
+/* Login Page */
+#loginPage {
+  background: rgba(255,255,255,0.95);
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 320px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+#loginPage h2 { color: #333; font-size: 24px; }
+#loginPage input {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  width: 100%;
+  font-size: 16px;
+}
+#loginPage button {
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background: #6a11cb;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+#loginPage button:hover { background: #2575fc; }
+#error { color:red; display:none; font-size: 14px; }
+
+/* Dashboard */
+#dashboard { display: none; flex-direction: column; align-items: center; width: 90%; max-width: 1200px; }
+h1 { margin: 20px 0; color: #fff; text-shadow: 2px 2px 8px rgba(0,0,0,0.3); }
+
+/* Orders Grid */
+.orders {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+.order-box {
+  background: rgba(255,255,255,0.95);
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  padding: 25px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+.order-box:hover { transform: translateY(-5px); background: rgba(255,255,255,1); }
+
+/* Overlay Page */
+#overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  justify-content: center; align-items: center;
+  z-index: 1000;
+}
+#overlayContent {
+  background: #fff;
+  border-radius: 15px;
+  padding: 30px;
+  width: 400px;
+  max-width: 90%;
+  text-align: center;
+  animation: fadeInScale 0.4s ease;
+}
+#overlayContent h2 { margin-bottom: 15px; color: #333; }
+#overlayContent p { margin: 10px 0; color: #555; }
+#closeOverlay {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: #6a11cb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+@keyframes fadeInScale {
+  0% { transform: scale(0.7); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+</style>
+</head>
+<body>
+
+<!-- Login Page -->
+<div id="loginPage">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p id="error">Incorrect username or password.</p>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard">
+    <h1>Noya Bari Eating Orders</h1>
+    <div class="orders">
+        <!-- 10 boxes -->
+        <div class="order-box">No Orders</div>
+        <div class="order-box">No Orders</div>
+        <div class="order-box">No Orders</div>
+        <div class="order-box">No Orders</div>
+        <div class="order-box">No Orders</div>
+        <div class="order-box">No Orders</div>
+        <div class="order-box">No Orders</div>
+        <div class="order-box">No Orders</div>
+        <div class="order-box">No Orders</div>
+        <div class="order-box">No Orders</div>
+    </div>
+</div>
+
+<!-- Overlay for Order Details -->
+<div id="overlay">
+    <div id="overlayContent">
+        <h2>Name: No Order</h2>
+        <p>Description: Anyone not ordered</p>
+        <button id="closeOverlay">Close</button>
+    </div>
+</div>
+
+<script>
+/* First-time login system */
+window.onload = function() {
+    if(localStorage.getItem('loggedIn') === 'true') {
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'flex';
+    }
+}
+
+function login() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const error = document.getElementById('error');
+
+    if(username === 'AMINOYABARI77' && password === '99NOYABARI') {
+        localStorage.setItem('loggedIn', 'true');
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'flex';
+    } else {
+        error.style.display = 'block';
+    }
+}
+
+/* Overlay functionality */
+const overlay = document.getElementById('overlay');
+const closeOverlay = document.getElementById('closeOverlay');
+const orderBoxes = document.querySelectorAll('.order-box');
+
+orderBoxes.forEach(box => {
+    box.addEventListener('click', () => {
+        overlay.style.display = 'flex';
+    });
+});
+
+closeOverlay.addEventListener('click', () => {
+    overlay.style.display = 'none';
+});
+</script>
+
+</body>
+</html>
